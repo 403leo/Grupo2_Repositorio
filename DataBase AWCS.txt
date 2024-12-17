@@ -1,0 +1,209 @@
+ CREATE DATABASE PROYECTO3;
+USE PROYECTO3;
+
+CREATE TABLE ESTADO(
+id_estado INT AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(100));
+
+CREATE TABLE ROL(
+id_rol INT AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(100),
+id_estado INT,
+CONSTRAINT `fk_rol_estado` FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado));
+
+CREATE TABLE CATEGORIA(
+id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(100),
+id_estado INT,
+CONSTRAINT `fk_categoria_estado` FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado));
+
+CREATE TABLE NOTIFICACIONES(
+    id_notifiacion INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    id_estado INT,
+	CONSTRAINT fk_notificacion_estado FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado)
+);
+
+CREATE TABLE USUARIO(
+id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+id_rol INT,
+id_estado INT,
+nombre VARCHAR(100),
+apellido VARCHAR(100),
+correo VARCHAR(100) UNIQUE,
+telefono INT(8),
+`password` VARCHAR(10),
+CONSTRAINT `fk_usuario_estado` FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado),
+CONSTRAINT `fk_usuario_rol` FOREIGN KEY(id_rol) REFERENCES ROL(id_rol)
+);
+
+CREATE TABLE LIBRO(
+id_libro INT AUTO_INCREMENT PRIMARY KEY,
+id_categoria INT,
+id_estado INT,
+nombre varchar(1000),
+stock INT,
+autor VARCHAR(100),
+fecha_lanzamiento DATE,
+editorial VARCHAR(100),
+CONSTRAINT `fk_libro_estado` FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado),
+CONSTRAINT `fk_libro_categoria` FOREIGN KEY(id_categoria) REFERENCES CATEGORIA(id_categoria)
+);
+
+CREATE TABLE PEDIDO(
+id_pedido INT AUTO_INCREMENT PRIMARY KEY,
+id_libro INT,
+id_usuario INT,
+id_estado INT,
+CONSTRAINT `fk_pedido_libro` FOREIGN KEY(id_libro) REFERENCES LIBRO(id_libro),
+CONSTRAINT `fk_pedido_usuario` FOREIGN KEY(id_usuario) REFERENCES USUARIO(id_usuario),
+CONSTRAINT `fk_pedido_estado` FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado)
+);
+
+CREATE TABLE MULTA(
+id_multa INT AUTO_INCREMENT PRIMARY KEY,
+id_usuario INT,
+id_estado INT,
+descripcion VARCHAR(1000),
+precio_multa INT,
+CONSTRAINT `fk_multa_usuario` FOREIGN KEY(id_usuario) REFERENCES USUARIO(id_usuario),
+CONSTRAINT `fk_multa_estado` FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado));
+
+CREATE TABLE DEVOLUCION(
+id_devolucion INT AUTO_INCREMENT PRIMARY KEY,
+id_pedido INT, 
+id_estado INT,
+fecha_caducidad DATE,
+CONSTRAINT `fk_devolucion_pedido` FOREIGN KEY(id_pedido) REFERENCES PEDIDO(id_pedido),
+CONSTRAINT `fk_devolucion_estado` FOREIGN KEY(id_estado) REFERENCES ESTADO(id_estado));
+
+-- Insertar datos en la tabla ESTADO
+INSERT INTO ESTADO (nombre) VALUES ('Activo');
+INSERT INTO ESTADO (nombre) VALUES ('Inactivo');
+INSERT INTO ESTADO (nombre) VALUES ('Pendiente');
+INSERT INTO ESTADO (nombre) VALUES ('Cancelado');
+INSERT INTO ESTADO (nombre) VALUES ('Finalizado');
+INSERT INTO ESTADO (nombre) VALUES ('En proceso');
+INSERT INTO ESTADO (nombre) VALUES ('Suspendido');
+INSERT INTO ESTADO (nombre) VALUES ('Reservado');
+INSERT INTO ESTADO (nombre) VALUES ('Entregado');
+INSERT INTO ESTADO (nombre) VALUES ('Aprobado');
+
+-- Insertar datos en la tabla ROL
+INSERT INTO ROL (nombre, id_estado) VALUES ('Administrador', 1);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Bibliotecario', 1);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Usuario', 1);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Supervisor', 1);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Editor', 1);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Autor', 1);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Visitante', 2);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Tester', 1);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Invitado', 2);
+INSERT INTO ROL (nombre, id_estado) VALUES ('Colaborador', 1);
+
+-- Insertar datos en la tabla CATEGORIA
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Ficción', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('No Ficción', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Ciencia', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Tecnología', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Historia', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Educación', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Cultura', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Arte', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Música', 1);
+INSERT INTO CATEGORIA (nombre, id_estado) VALUES ('Deportes', 1);
+
+-- Insertar datos en la tabla NOTIFICACIONES
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Nuevo libro disponible', 1);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Devolución pendiente', 3);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Multa aplicada', 3);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Libro reservado', 8);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Stock agotado', 6);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Usuario suspendido', 7);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Pedido aprobado', 10);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Entrega exitosa', 9);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Actualización de datos', 1);
+INSERT INTO NOTIFICACIONES (nombre, id_estado) VALUES ('Promoción activa', 1);
+
+-- Insertar datos en la tabla USUARIO
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (1, 1, 'Juan', 'Pérez', 'juan.perez@example.com', 12345678, '1234abcd');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (3, 1, 'Ana', 'Gómez', 'ana.gomez@example.com', 87654321, '5678abcd');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (4, 1, 'Carlos', 'López', 'carlos.lopez@example.com', 12348765, 'abcd1234');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (3, 1, 'Laura', 'Martínez', 'laura.martinez@example.com', 56781234, 'abcd5678');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (3, 1, 'Pedro', 'Sánchez', 'pedro.sanchez@example.com', 67891234, 'xyz12345');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (3, 1, 'Sofía', 'Ramírez', 'sofia.ramirez@example.com', 43215678, 'abcxyz12');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (3, 1, 'Mario', 'Díaz', 'mario.diaz@example.com', 87651234, '1234xyza');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (3, 2, 'Isabel', 'Ruiz', 'isabel.ruiz@example.com', 98123456, 'abcd123x');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (10, 2, 'Luis', 'Fernández', 'luis.fernandez@example.com', 87659812, 'xyzabcd1');
+INSERT INTO USUARIO (id_rol, id_estado,nombre,apellido,correo,telefono,`password`) VALUES (9, 1, 'Mónica', 'Torres', 'monica.torres@example.com', 56789123, 'xyz123ab');
+
+-- Insertar datos en la tabla LIBRO
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (1, 1, 'Una novela fascinante', 10, 'Autor A', '2020-01-01', 'Editorial X');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (2, 1, 'Un ensayo brillante', 5, 'Autor B', '2018-05-12', 'Editorial Y');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (3, 1, 'Ciencia para todos', 3, 'Autor C', '2017-08-20', 'Editorial Z');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (4, 1, 'Avances tecnológicos', 7, 'Autor D', '2019-10-30', 'Editorial X');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (5, 1, 'Historia mundial', 8, 'Autor E', '2021-03-15', 'Editorial Y');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (6, 1, 'Educación para el futuro', 9, 'Autor F', '2022-07-22', 'Editorial Z');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (7, 1, 'Culturas antiguas', 4, 'Autor G', '2016-02-28', 'Editorial X');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (8, 1, 'Arte contemporáneo', 6, 'Autor H', '2015-09-14', 'Editorial Y');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (9, 1, 'Historia de la música', 3, 'Autor I', '2014-11-18', 'Editorial Z');
+INSERT INTO LIBRO (id_categoria,id_estado,nombre, stock,autor,fecha_lanzamiento,editorial) VALUES (10, 1, 'Deportes modernos', 12, 'Autor J', '2013-06-25', 'Editorial X');
+
+-- Insertar datos en la tabla PEDIDO
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (1, 1, 1);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (2, 2, 1);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (3, 3, 1);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (4, 4, 3);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (5, 5, 3);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (6, 6, 3);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (7, 7, 9);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (8, 8, 10);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (9, 9, 10);
+INSERT INTO PEDIDO (id_libro,id_usuario,id_estado) VALUES (10, 10, 10);
+
+-- Insertar datos en la tabla MULTA
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (1, 3, 'Devolución tardía', 100);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (2, 3, 'Libro dañado', 200);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (3, 3, 'Devolución tardía', 150);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (4, 3, 'Pérdida de libro', 500);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (5, 3, 'Devolución tardía', 100);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (6, 3, 'Libro dañado', 250);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (7, 3, 'Devolución tardía', 100);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (8, 3, 'Pérdida de libro', 500);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (9, 3, 'Devolución tardía', 150);
+INSERT INTO MULTA (id_usuario, id_estado, descripcion,precio_multa) VALUES (10, 3, 'Libro dañado', 200);
+
+-- Insertar datos en la tabla DEVOLUCION
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (1, 1, '2024-12-01');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (2, 3, '2024-11-30');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (3, 9, '2024-11-25');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (4, 9, '2024-11-20');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (5, 1, '2024-12-05');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (6, 1, '2024-12-10');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (7, 10, '2024-12-15');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (8, 10, '2024-12-20');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (9, 10, '2024-12-25');
+INSERT INTO DEVOLUCION (id_pedido,id_estado,fecha_caducidad) VALUES (10, 10, '2024-12-30');
+
+ALTER TABLE NOTIFICACIONES 
+ADD mensaje TEXT AFTER id_estado;
+
+ ALTER TABLE NOTIFICACIONES 
+ADD fecha_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+
+CREATE TABLE NOTIFICACIONES_PREDEFINIDAS (
+    id_notificacion INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    mensaje TEXT NOT NULL
+);
+
+INSERT INTO NOTIFICACIONES_PREDEFINIDAS (nombre, mensaje) VALUES 
+('Recordatorio de Devolución', 'Por favor, devuelva su libro antes de la fecha de vencimiento.'),
+('Aviso de Multa', 'Se ha generado una multa por la no devolución de un libro a tiempo.'),
+('Confirmación de Reserva', 'Su reserva ha sido confirmada y está lista para ser recogida.');
+
+ALTER TABLE NOTIFICACIONES 
+CHANGE id_notifiacion id_notificacion INT AUTO_INCREMENT;
+
+alter TABLE PEDIDO ADD FECHA_PEDIDO date;
